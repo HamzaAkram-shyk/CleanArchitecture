@@ -14,4 +14,12 @@ interface NewsAPIService {
         @Query("page") page: Int,
         @Query("apiKey") apiKey: String = Constant.api_key,
     ): Response<APIResponse>
+
+    @GET("v2/top-headlines")
+    suspend fun getCategoryNews(
+        @Query("category") category: String,
+        @Query("apiKey") apiKey: String = Constant.api_key,
+    ): Response<APIResponse>
+
+
 }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class GetSavedNewsUseCase(private val repository: NewsRepository) {
 
-    suspend fun execute(): Flow<List<Article>>{
-        return repository.getSavedNews()
-    }
+//    suspend fun execute(): Flow<List<Article>>{
+//        return repository.getSavedNews()
+//    }
 }

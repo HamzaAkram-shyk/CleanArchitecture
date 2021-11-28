@@ -5,13 +5,16 @@ import com.example.cleanarchitecture.data.model.Article
 import com.example.cleanarchitecture.data.repository.datasource.NewsRemoteDataSource
 import com.example.cleanarchitecture.domain.repository.NewsRepository
 import com.example.cleanarchitecture.util.Resource
-import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
+import javax.inject.Inject
 
-class NewsRepositoryImp(private val newsRemoteDataSource: NewsRemoteDataSource) : NewsRepository {
+
+class NewsRepositoryImp @Inject constructor(private val newsRemoteDataSource: NewsRemoteDataSource) :
+    NewsRepository {
 
     override suspend fun getNewsHeadlines(page: Int, country: String): Resource<APIResponse> {
         return try {
-            val response = newsRemoteDataSource.getTopHeadlines(page,country)
+            val response = newsRemoteDataSource.getTopHeadlines(page, country)
             Resource.Success(response.body()!!)
         } catch (e: Exception) {
             Resource.Error("${e.message.toString()}")
@@ -30,7 +33,19 @@ class NewsRepositoryImp(private val newsRemoteDataSource: NewsRemoteDataSource) 
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSavedNews(): Flow<List<Article>> {
-        TODO("Not yet implemented")
+    override suspend fun getCategoryNews(category: String): Resource<APIResponse> {
+        return newsRemoteDataSource.getCategoryNews(category).toResource()
     }
+
+
+}
+
+fun <T> Response<T>.toResource(): Resource<T> {
+    val response = this
+    if (response.isSuccessful) {
+        response.body()?.let { result ->
+            return Resource.Success(result)
+        }
+    }
+    return Resource.Error(response.message())
 }

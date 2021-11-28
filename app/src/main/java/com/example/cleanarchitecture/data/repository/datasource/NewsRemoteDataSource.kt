@@ -5,5 +5,5 @@ import retrofit2.Response
 
 interface NewsRemoteDataSource {
     suspend fun getTopHeadlines(page: Int, country: String): Response<APIResponse>
-
+    suspend fun getCategoryNews(category: String): Response<APIResponse>
 }
