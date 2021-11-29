@@ -1,6 +1,6 @@
 package com.example.cleanarchitecture.data.api
 
-import androidx.databinding.ktx.BuildConfig
+
 import com.example.cleanarchitecture.data.model.APIResponse
 import com.example.cleanarchitecture.util.Constant
 import retrofit2.Response

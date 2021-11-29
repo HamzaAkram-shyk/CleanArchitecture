@@ -1,6 +1,8 @@
 package com.example.cleanarchitecture.di.remotedatasourcemodule
 
 import com.example.cleanarchitecture.data.api.NewsAPIService
+import com.example.cleanarchitecture.di.NewsApiService
+import com.example.cleanarchitecture.di.NewsApiServiceWithJson
 import com.example.cleanarchitecture.util.Constant
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -11,6 +13,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -28,12 +31,30 @@ object Moduller {
 
     @Singleton
     @Provides
+    @NewsApiServiceWithJson
     fun provideNewsApiService(gson: Gson): NewsAPIService {
         return Retrofit.Builder()
             .baseUrl(Constant.base_url)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(NewsAPIService::class.java)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(Constant.base_url)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    @NewsApiService
+    fun provideApiService(retrofit: Retrofit): NewsAPIService {
+        return retrofit.create(NewsAPIService::class.java)
     }
 
 }
