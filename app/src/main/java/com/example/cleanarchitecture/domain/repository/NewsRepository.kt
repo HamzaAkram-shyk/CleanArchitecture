@@ -1,5 +1,6 @@
 package com.example.cleanarchitecture.domain.repository
 
+import com.example.cleanarchitecture.data.localDb.UserToken
 import com.example.cleanarchitecture.data.model.APIResponse
 import com.example.cleanarchitecture.data.model.Article
 import com.example.cleanarchitecture.util.Resource
@@ -12,4 +13,5 @@ interface NewsRepository {
     suspend fun savedNews(article: Article)
     suspend fun deleteNews(article: Article)
     suspend fun getCategoryNews(category: String): Resource<APIResponse>
+    suspend fun registerUserToken(userToken: UserToken): Long
 }

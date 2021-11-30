@@ -1,6 +1,7 @@
 package com.example.cleanarchitecture.data.repository
 
 import android.util.Log
+import com.example.cleanarchitecture.data.localDb.UserToken
 import com.example.cleanarchitecture.data.model.APIResponse
 import com.example.cleanarchitecture.data.model.Article
 import com.example.cleanarchitecture.data.repository.datasource.NewsRemoteDataSource
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 class NewsRepositoryImp @Inject constructor(
     private val newsRemoteDataSource: NewsRemoteDataSource,
-    private val  newsLocalDataSource: NewsLocalDataSource
+    private val newsLocalDataSource: NewsLocalDataSource
 ) :
     NewsRepository {
 
@@ -50,6 +51,10 @@ class NewsRepositoryImp @Inject constructor(
             Resource.Error("${e.localizedMessage.toString()}")
         }
 
+    }
+
+    override suspend fun registerUserToken(userToken: UserToken): Long {
+        return newsLocalDataSource.registeredUserToken(userToken)
     }
 
 
