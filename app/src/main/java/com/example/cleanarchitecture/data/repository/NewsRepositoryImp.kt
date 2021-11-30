@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class NewsRepositoryImp @Inject constructor(
     private val newsRemoteDataSource: NewsRemoteDataSource,
-    private val  newsLocalDataSource: NewsLocalDataSource
+    private val newsLocalDataSource: NewsLocalDataSource
 ) :
     NewsRepository {
 
@@ -39,14 +39,10 @@ class NewsRepositoryImp @Inject constructor(
     }
 
     override suspend fun getCategoryNews(category: String): Resource<APIResponse> {
-        var code = -1
         return try {
-            val response = newsRemoteDataSource.getCategoryNews(category)
-            code = response.code()
-            Log.e("Code", "Request Code = $code")
-            Resource.Success(response.body()!!)
+            newsRemoteDataSource.getCategoryNews(category).toResource()
         } catch (e: Exception) {
-            Log.e("Code", "Request Code = $code")
+
             Resource.Error("${e.localizedMessage.toString()}")
         }
 
