@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.data.model.APIResponse
 import com.example.cleanarchitecture.domain.usecase.GetCategoryNewsUseCase
 import com.example.cleanarchitecture.domain.usecase.GetNewsHeadlinesUseCase
+import com.example.cleanarchitecture.domain.usecase.LoginUseCase
 import com.example.cleanarchitecture.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,12 +19,13 @@ import javax.inject.Inject
 class NewsViewModel @Inject constructor(
     private val useCase: GetNewsHeadlinesUseCase,
     private val categoryUseCase: GetCategoryNewsUseCase,
+    private var loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private var newsLiveData = MutableLiveData<Resource<APIResponse>>()
-
+    private var tokenLiveData = MutableLiveData<Resource<String>>()
     val _newsLiveData = newsLiveData
-
+    val _tokenLiveData = tokenLiveData
 
 //    fun getNews(page: Int, country: String) =
 //        viewModelScope.launch {
@@ -34,6 +37,14 @@ class NewsViewModel @Inject constructor(
         newsLiveData.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             newsLiveData.postValue(categoryUseCase.execute(category))
+        }
+    }
+
+    fun makeLoginRequest(category: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            tokenLiveData.postValue(Resource.Loading())
+            delay(1000)
+            tokenLiveData.postValue(loginUseCase.execute(category))
         }
     }
 

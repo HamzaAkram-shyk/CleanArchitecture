@@ -1,6 +1,7 @@
 package com.example.cleanarchitecture.data.repository
 
 import android.util.Log
+import com.example.cleanarchitecture.data.localDb.UserToken
 import com.example.cleanarchitecture.data.model.APIResponse
 import com.example.cleanarchitecture.data.model.Article
 import com.example.cleanarchitecture.data.repository.datasource.NewsRemoteDataSource
@@ -46,6 +47,10 @@ class NewsRepositoryImp @Inject constructor(
             Resource.Error("${e.localizedMessage.toString()}")
         }
 
+    }
+
+    override suspend fun registerUserToken(userToken: UserToken): Long {
+        return newsLocalDataSource.registeredUserToken(userToken)
     }
 
 
