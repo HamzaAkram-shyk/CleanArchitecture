@@ -9,39 +9,23 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.cleanarchitecture.data.localDb.UserToken
 import com.example.cleanarchitecture.presentation.viewmodel.NewsViewModel
 
 import com.example.cleanarchitecture.util.Resource
 import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var loader: MaterialCardView
-    private val viewModel: NewsViewModel by viewModels()
+    private val viewModel: NewsViewModel by getViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //viewModel = ViewModelProvider(this, factory)[NewsViewModel::class.java]
-//        viewModel.getNewsCategory("sports")
-//        viewModel._newsLiveData.observe(this, Observer {
-//            when (it) {
-//                is Resource.Success -> {
-//                    val result = it.data!!
-//                    result.articles.forEach { article ->
-//                        Log.d("data", "Title = ${article.title}: Content = ${article.content}")
-//                    }
-//                }
-//                is Resource.Error -> {
-//                    Log.d("data", "Error = ${it.message}")
-//                }
-//                is Resource.Loading -> {
-//                    Log.d("data", "Loading..........")
-//                }
-//            }
-//        })
         loader = findViewById(R.id.loader)
         findViewById<Button>(R.id.loginBtn).setOnClickListener {
             viewModel.makeLoginRequest("sports")
