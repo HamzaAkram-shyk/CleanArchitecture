@@ -15,14 +15,10 @@ import javax.inject.Inject
 
 
 open class BaseViewModel @Inject constructor() : ViewModel() {
-
     @Inject
-    lateinit var context: Context
+    lateinit var connectivityManager: ConnectivityManager
 
     fun isNetworkAvailable(): Boolean {
-        if (context == null) return false
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val capabilities =
                 connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
@@ -57,8 +53,6 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
             data.value = Resource.Error("Please Check Your Internet")
         }
     }
-
-
 
 
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import com.example.cleanarchitecture.MyApplication
 import dagger.Module
 import dagger.Provides
@@ -29,7 +30,10 @@ object AuthModule {
         return context.getSharedPreferences("sharePref", MODE_PRIVATE)
     }
 
-    fun provideAppContext(context: Application) = MyApplication()
+
+    @Provides
+    @Singleton
+    fun provideConnectivityManager(context: Context) :ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 
 }

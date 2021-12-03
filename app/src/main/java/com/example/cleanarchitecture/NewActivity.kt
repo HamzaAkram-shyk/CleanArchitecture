@@ -4,26 +4,31 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.example.cleanarchitecture.base.BaseActivity
 import com.example.cleanarchitecture.base.NetworkCallback
+import com.example.cleanarchitecture.util.NetworkConnection
 
 class NewActivity : BaseActivity(), NetworkCallback {
     private lateinit var view: ConstraintLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setConnectionCallback(this)
         setContentView(R.layout.activity_new)
         view = findViewById(R.id.parent)
-        setCallback(this)
     }
 
-    override fun networkChange(change: Boolean) {
-        if (change) {
-            view.setBackgroundResource(R.color.green)
-        } else {
-            view.setBackgroundResource(R.color.red)
-        }
+
+    override fun onInternetDisconnect() {
+        view.setBackgroundResource(R.color.red)
+        Toast.makeText(this, "Disconnect", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onInternetConnect() {
+        view.setBackgroundResource(R.color.green)
+        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
     }
 
 
