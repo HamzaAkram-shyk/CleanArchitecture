@@ -2,8 +2,13 @@ package com.example.cleanarchitecture.domain.usecase
 
 import android.util.Log
 import com.example.cleanarchitecture.data.localDb.UserToken
+import com.example.cleanarchitecture.data.model.APIResponse
 import com.example.cleanarchitecture.domain.repository.NewsRepository
 import com.example.cleanarchitecture.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(private val repository: NewsRepository) {
@@ -35,5 +40,14 @@ class LoginUseCase @Inject constructor(private val repository: NewsRepository) {
 
     }
 
+    suspend fun executeFlow(category: String): Flow<Resource<APIResponse>> {
+        return flow {
+            repository.getNews(category).catch { e ->
+                emit(Resource.Error(e.message.toString()))
+            }.collect {
+                emit(Resource.Success(it))
+            }
+        }
+    }
 
 }

@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.cleanarchitecture.data.localDb.UserToken
+import com.example.cleanarchitecture.presentation.viewmodel.AuthViewModel
 import com.example.cleanarchitecture.presentation.viewmodel.NewsViewModel
 
 import com.example.cleanarchitecture.util.Resource
@@ -23,29 +24,34 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var loader: MaterialCardView
     private val viewModel: NewsViewModel by getViewModels()
+    private val authViewModel: AuthViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         loader = findViewById(R.id.loader)
+        Toast.makeText(this, "User login == ${authViewModel.isLogin()}", Toast.LENGTH_SHORT).show()
         findViewById<Button>(R.id.loginBtn).setOnClickListener {
-            viewModel.makeLoginRequest("sports")
+            // viewModel.makeLoginRequest("sports")
+            // viewModel.showToast("Hello there.....")
+          //  authViewModel.createAccount("Hamza", "123456", "hamza.sourcecode@gmail.com")
+            authViewModel.getData()
         }
-        viewModel._tokenLiveData.observe(this, Observer {
+        authViewModel.response.observe(this, Observer {
             when (it) {
                 is Resource.Success -> {
                     loader.visibility = View.GONE
-                    Log.e("data", "usertoken = ${it.data}")
-                    Toast.makeText(this, "${it.data}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Success = ${it.data}", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Error -> {
                     loader.visibility = View.GONE
-                    Log.e("data", "Error = ${it.message}")
+                    Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Loading -> {
                     loader.visibility = View.VISIBLE
                 }
             }
         })
+
 
     }
 

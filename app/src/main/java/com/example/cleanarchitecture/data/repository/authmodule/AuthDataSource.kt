@@ -3,5 +3,9 @@ package com.example.cleanarchitecture.data.repository.authmodule
 import com.example.cleanarchitecture.util.Resource
 
 interface AuthDataSource {
-    suspend fun login(email: String, password: String, coupan: Int): Resource<String>
+    suspend fun saveUserToken(token: String)
+    suspend fun saveUserLoginStatus(isLogin: Boolean)
+    suspend fun getLoginStatus(): Boolean
+    suspend fun getUserToken(): String?
+
 }

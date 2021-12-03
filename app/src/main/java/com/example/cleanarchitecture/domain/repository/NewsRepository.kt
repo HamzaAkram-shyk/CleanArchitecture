@@ -14,4 +14,5 @@ interface NewsRepository {
     suspend fun deleteNews(article: Article)
     suspend fun getCategoryNews(category: String): Resource<APIResponse>
     suspend fun registerUserToken(userToken: UserToken): Long
+    suspend fun getNews(category: String): Flow<APIResponse>
 }
