@@ -43,7 +43,7 @@ class LoginUseCase @Inject constructor(private val repository: NewsRepository) {
     suspend fun executeFlow(category: String): Flow<Resource<APIResponse>> {
         return flow {
             repository.getNews(category).catch { e ->
-                emit(Resource.Error(e.message.toString()))
+                emit(Resource.Error(message = e.message.toString()))
             }.collect {
                 emit(Resource.Success(it))
             }

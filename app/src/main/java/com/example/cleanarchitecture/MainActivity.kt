@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.viewModels
+
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.cleanarchitecture.data.localDb.UserToken
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     private lateinit var loader: MaterialCardView
     private val viewModel: NewsViewModel by getViewModels()
-    private val authViewModel: AuthViewModel by viewModels()
+   // private val authViewModel: AuthViewModel by viewModels()
 
     @Inject
     lateinit var networkConnection: NetworkConnection
@@ -62,17 +62,17 @@ class MainActivity : AppCompatActivity() {
 //            Toast.makeText(this, "Internet is Changing...", Toast.LENGTH_SHORT).show()
 //        })
 
-        NetworkStatusHelper(this).observe(this, Observer {
-            when (it) {
-                is NetworkStatus.Available -> {
-                    Toast.makeText(this, "Internet is Connected...", Toast.LENGTH_SHORT).show()
-                }
-
-                is NetworkStatus.Unavailable -> {
-                    Toast.makeText(this, "Internet is Not Connected", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+//        NetworkStatusHelper(this).observe(this, Observer {
+//            when (it) {
+//                is NetworkStatus.Available -> {
+//                    Toast.makeText(this, "Internet is Connected...", Toast.LENGTH_SHORT).show()
+//                }
+//
+//                is NetworkStatus.Unavailable -> {
+//                    Toast.makeText(this, "Internet is Not Connected", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        })
 
     }
 

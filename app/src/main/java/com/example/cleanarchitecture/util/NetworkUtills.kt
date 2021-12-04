@@ -2,6 +2,7 @@ package com.example.cleanarchitecture.util
 
 import android.content.Context
 import android.net.*
+import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,22 +17,11 @@ sealed class NetworkStatus {
     object Unavailable : NetworkStatus()
 }
 
-class NetworkStatusHelper constructor(private val context: Context) :
+class NetworkStatusHelper @Inject constructor(private val connectivityManager: ConnectivityManager) :
     LiveData<NetworkStatus>() {
 
-    //  val valideNetworkConnections: ArrayList<Network> = ArrayList()
-    var connectivityManager: ConnectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
     private lateinit var connectivityManagerCallback: ConnectivityManager.NetworkCallback
-
-    init {
-        if (connectivityManager.activeNetworkInfo!!.isConnected) {
-            postValue(NetworkStatus.Available)
-        } else {
-            postValue(NetworkStatus.Unavailable)
-        }
-
-    }
 
     private fun getConnectivityManagerCallback() =
         object : ConnectivityManager.NetworkCallback() {
@@ -44,28 +34,34 @@ class NetworkStatusHelper constructor(private val context: Context) :
                 if (hasNetworkConnection) {
                     determineInternetAccess()
                 }
+                Log.e("network", "onAvailable")
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-//                valideNetworkConnections.remove(network)
-//                announceStatus()
                 postValue(NetworkStatus.Unavailable)
+                Log.e("network", "onLost")
             }
 
             override fun onCapabilitiesChanged(
                 network: Network,
-                networkCapabilities: NetworkCapabilities
+                networkCapabilities: NetworkCapabilities,
             ) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
                 if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
                     determineInternetAccess()
                 } else {
-                    // valideNetworkConnections.remove(network)
                     postValue(NetworkStatus.Unavailable)
                 }
-                // announceStatus()
+                Log.e("network", "onCapabilitiesChanged")
             }
+
+            override fun onUnavailable() {
+                super.onUnavailable()
+                postValue(NetworkStatus.Unavailable)
+                Log.e("network", "onUnavailable")
+            }
+
         }
 
     private fun determineInternetAccess() {

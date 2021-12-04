@@ -14,8 +14,8 @@ import com.example.cleanarchitecture.util.NetworkConnection
 class NewActivity : BaseActivity(), NetworkCallback {
     private lateinit var view: ConstraintLayout
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setConnectionCallback(this)
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new)
         view = findViewById(R.id.parent)
     }

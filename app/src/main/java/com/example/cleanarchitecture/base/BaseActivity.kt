@@ -8,30 +8,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.cleanarchitecture.util.*
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 open class BaseActivity() : AppCompatActivity() {
-    protected lateinit var connection: NetworkStatusHelper
+
     lateinit var callback: NetworkCallback
+
+    @Inject
+    protected lateinit var networkConnection: NetworkConnection
     fun setConnectionCallback(callback: NetworkCallback) {
         this.callback = callback
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        connection= NetworkStatusHelper(applicationContext)
-        connection.observe(this, Observer {
-            when (it) {
-                is NetworkStatus.Available -> {
-                    callback.onInternetConnect()
-                   // Toast.makeText(context, "Available", Toast.LENGTH_SHORT).show()
-                }
-                is NetworkStatus.Unavailable -> {
-                    callback.onInternetDisconnect()
-                    //Toast.makeText(context, "Not Available", Toast.LENGTH_SHORT).show()
-                }
+        networkConnection.observe(this, Observer {
+            if (it) {
+                callback.onInternetConnect()
+            } else {
+                callback.onInternetDisconnect()
             }
         })
-        Toast.makeText(applicationContext, "Hello there....", Toast.LENGTH_SHORT).show()
+
+        ///  Toast.makeText(applicationContext, "Hello there....", Toast.LENGTH_SHORT).show()
     }
 
 }
