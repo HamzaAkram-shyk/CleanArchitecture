@@ -36,4 +36,8 @@ object AuthModule {
     fun provideConnectivityManager(context: Context) :ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 
+
+
+
+
 }

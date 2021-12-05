@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authUC: AuthUseCase,
-    private val loginUC: LoginUseCase
+    private val loginUC: LoginUseCase,
 ) : BaseViewModel() {
     private var observer = getMutableResource<String>()
     var _observer: LiveData<Resource<String>> = observer
@@ -40,15 +40,23 @@ class AuthViewModel @Inject constructor(
         return isLogin
     }
 
-    fun getData() {
-        hasInternet(response) {
-            viewModelScope.launch {
-                loginUC.executeFlow("sports").collect { resource ->
-                    response.value = resource
-                }
-            }
-        }
+//    fun getData() {
+//        hasInternet(response) {
+//            viewModelScope.launch {
+//                loginUC.executeFlow("sports").collect { resource ->
+//                    response.value = resource
+//                }
+//            }
+//        }
+//
+//    }
 
+
+    fun executeNetworkCall() {
+        observer.value = Resource.Loading()
+        viewModelScope.launch {
+            observer.value = loginUC.execute("sports")
+        }
     }
 
 }

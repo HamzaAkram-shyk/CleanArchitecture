@@ -1,8 +1,10 @@
 package com.example.cleanarchitecture.di.remotedatasourcemodule
 
+import android.net.ConnectivityManager
 import com.example.cleanarchitecture.data.api.NewsAPIService
 import com.example.cleanarchitecture.di.NewsApiService
 import com.example.cleanarchitecture.di.NewsApiServiceWithJson
+import com.example.cleanarchitecture.util.ConnectivityInterceptor
 import com.example.cleanarchitecture.util.Constant
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -11,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -43,10 +46,19 @@ object Moduller {
 
     @Singleton
     @Provides
-    fun provideRetrofit(): Retrofit {
+    fun provideHttpClient(connectivityManager: ConnectivityManager): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(ConnectivityInterceptor(connectivityManager))
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(Constant.base_url)
+            .client(okHttpClient)
             .build()
     }
 
