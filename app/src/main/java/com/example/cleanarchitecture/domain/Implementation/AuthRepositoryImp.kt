@@ -6,6 +6,9 @@ import com.example.cleanarchitecture.data.repository.datasource.NewsRemoteDataSo
 import com.example.cleanarchitecture.data.repository.localdatasource.NewsLocalDataSource
 import com.example.cleanarchitecture.domain.repository.AuthRepository
 import com.example.cleanarchitecture.util.Resource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -14,6 +17,7 @@ class AuthRepositoryImp @Inject constructor(
     private val dataStore: AuthDataSource
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): Resource<String> {
+        delay(2000)
         return Resource.Success(email)
     }
 
@@ -21,26 +25,14 @@ class AuthRepositoryImp @Inject constructor(
         name: String,
         password: String,
         email: String
-    ): Resource<String> {
-        return try {
-            val response = newsRemoteDataSource.getCategoryNews("sports")
-            if (response.isSuccessful) {
-                response.let {
-                    val token = it.body()!!.articles[0].title
-                    dataStore.saveUserToken(token)
-                    setLoginStatus(true)
-                    Resource.Success(token)
-                }
-            } else {
-                Resource.Error(response.message().toString())
-            }
-
-        } catch (e: Exception) {
-            Resource.Error("${e.localizedMessage.toString()}")
+    ): Flow<APIResponse> {
+        return flow {
+            emit(newsRemoteDataSource.getCategoryNews("sports").body()!!)
         }
     }
 
-    override suspend fun getLoginStatus(): Boolean {
+
+    override  fun getLoginStatus(): Boolean {
         return dataStore.getLoginStatus()
     }
 
@@ -49,7 +41,11 @@ class AuthRepositoryImp @Inject constructor(
     }
 
     override suspend fun setLoginStatus(isLogin: Boolean) {
-       dataStore.saveUserLoginStatus(isLogin)
+        dataStore.saveUserLoginStatus(isLogin)
+    }
+
+    override suspend fun saveToken(token: String) {
+        dataStore.saveUserToken(token)
     }
 
 

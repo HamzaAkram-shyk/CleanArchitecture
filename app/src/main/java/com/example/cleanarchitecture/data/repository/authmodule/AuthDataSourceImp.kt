@@ -17,7 +17,7 @@ class AuthDataSourceImp @Inject constructor(private val sharedPreferences: Share
         editor.commit()
     }
 
-    override suspend fun getLoginStatus(): Boolean {
+    override fun getLoginStatus(): Boolean {
         return sharedPreferences.getBoolean("loginStatus", false)
     }
 

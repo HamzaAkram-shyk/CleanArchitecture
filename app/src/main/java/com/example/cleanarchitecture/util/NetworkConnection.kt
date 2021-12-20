@@ -9,13 +9,14 @@ import android.net.*
 import android.os.Build
 import android.os.Build.VERSION.SDK
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.cleanarchitecture.base.NetworkCallback
 import javax.inject.Inject
 
 class NetworkConnection @Inject constructor(
     private val context: Context,
     private val connectivityManager: ConnectivityManager
-) : LiveData<Boolean>() {
+) : MutableLiveData<Boolean>() {
 
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
 

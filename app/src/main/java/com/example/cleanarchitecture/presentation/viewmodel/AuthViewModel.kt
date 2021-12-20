@@ -1,11 +1,12 @@
 package com.example.cleanarchitecture.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cleanarchitecture.base.BaseViewModel
 import com.example.cleanarchitecture.data.model.APIResponse
-import com.example.cleanarchitecture.domain.usecase.AuthUseCase
-import com.example.cleanarchitecture.domain.usecase.LoginUseCase
+import com.example.cleanarchitecture.domain.usecase.SigInUseCase
+import com.example.cleanarchitecture.domain.usecase.SignUpUseCase
+import com.example.cleanarchitecture.presentation.extentions.asSingleEvent
 import com.example.cleanarchitecture.presentation.extentions.getMutableResource
 import com.example.cleanarchitecture.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,46 +18,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authUC: AuthUseCase,
-    private val loginUC: LoginUseCase,
+    private val signUpUC: SignUpUseCase,
+    private val sigInUc: SigInUseCase
 ) : BaseViewModel() {
-    private var observer = getMutableResource<String>()
-    var _observer: LiveData<Resource<String>> = observer
-    var response = getMutableResource<APIResponse>()
+    private var observer = getMutableResource<APIResponse>().asSingleEvent()
+    var _observer: LiveData<Resource<APIResponse>> = observer
+
     fun createAccount(name: String, password: String, email: String) {
         observer.value = Resource.Loading()
-        hasInternet(observer) {
-            viewModelScope.launch(Dispatchers.IO) {
-                observer.postValue(authUC.executeSignUp(name, password, email))
+        viewModelScope.launch(Dispatchers.IO) {
+            signUpUC.createAccount(name, password, email).collect {
+                observer.postValue(it)
             }
         }
     }
 
-    fun isLogin(): Boolean {
-        var isLogin = false
-        viewModelScope.launch {
-            isLogin = authUC.userIsLogin()
-        }
-        return isLogin
-    }
-
-//    fun getData() {
-//        hasInternet(response) {
-//            viewModelScope.launch {
-//                loginUC.executeFlow("sports").collect { resource ->
-//                    response.value = resource
-//                }
-//            }
-//        }
-//
-//    }
-
-
-    fun executeNetworkCall() {
-        observer.value = Resource.Loading()
-        viewModelScope.launch {
-            observer.value = loginUC.execute("sports")
-        }
-    }
+    fun isUserLogin() = sigInUc.getLoginStatus()
 
 }
